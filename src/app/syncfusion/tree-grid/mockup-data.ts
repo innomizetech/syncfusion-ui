@@ -1,21 +1,21 @@
 import * as faker from 'faker'
+import { v4 as uuid } from 'uuid';
 
 export interface Task {
     taskID: number;
-    lineRef: number;
     taskName: string;
     startDate: Date;
     endDate: Date;
     progress: number;
     duration: number;
     approved: boolean;
+    priority: string;
     subtasks?: Task[];
 }
 
 const generateTasks = (): Task[] => {
     return Array(1000).fill(null).map((item, idx) => ({
-        taskID: Date.now(),
-        lineRef: idx + 1,
+        taskID: uuid(),
         taskName: faker.name.findName(),
         startDate: faker.date.past(),
         endDate: faker.date.recent(),
@@ -26,11 +26,12 @@ const generateTasks = (): Task[] => {
     }))
 }
 
+
 const populateTasks = (tasks: Task[]) => {
     let currentIndex = 1;
 
     return tasks.reduce((accumulator, currentValue) => {
-        currentValue.subtasks = tasks.splice(currentIndex, 5)
+        currentValue.subtasks = tasks.splice(currentIndex, 2)
 
         currentIndex += 1;
 
