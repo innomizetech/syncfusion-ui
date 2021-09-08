@@ -134,7 +134,7 @@ export class TreeGridComponent implements OnInit {
         let cloneTasks = _.clone(this.tasks);
 
         for (const record of filterRecords) {
-            const path = this.findPath(record.taskID);
+            const path = this.findPath(record.subtasks ? record.taskID : record.parentItem.taskID);
 
             _.set(cloneTasks, `${path}.subtasks`, [
                 ..._.get(cloneTasks, `${path}.subtasks`),
