@@ -3,7 +3,6 @@
     <div>
       <ejs-treegrid
         #treegrid
-        [contextMenuItems]=""
         [dataSource]="tasks"
         childMapping="subtasks"
         height="800"
@@ -12,30 +11,34 @@
         [selectionSettings]="selectionSettings"
         [contextMenuItems]="contextMenuItems"
         [editSettings]="editing"
+        [allowRowDragAndDrop]="true"
       >
         <e-columns>
           <e-column
             field="lineRef"
-            headerText="Line Ref"
+            headerText="Line"
             width="70"
             textAlign="Right"
+            isPrimaryKey="true"
           ></e-column>
           <e-column
-            field="taskName"
-            headerText="Task Name"
+            field="name"
+            headerText="Name"
             width="200"
             textAlign="Left"
           ></e-column>
           <e-column
-            field="duration"
-            headerText="Duration"
-            width="100"
-            textAlign="Right"
-          ></e-column>
-          <e-column
             field="startDate"
             headerText="Start Date"
-            width="90"
+            width="100"
+            format="yMd"
+            textAlign="Right"
+          >
+          </e-column>
+          <e-column
+            field="endDate"
+            headerText="End Date"
+            width="100"
             format="yMd"
             textAlign="Right"
           >
@@ -44,7 +47,25 @@
             field="progress"
             headerText="Progress"
             width="90"
-            textAlign="Right"
+            textAlign="Center"
+          ></e-column>
+          <e-column
+            field="duration"
+            headerText="Duration"
+            width="90"
+            textAlign="Center"
+          ></e-column>
+          <e-column
+            field="priority"
+            headerText="Priority"
+            width="90"
+            textAlign="Center"
+          ></e-column>
+          <e-column
+            field="approved"
+            headerText="Approved"
+            width="90"
+            textAlign="Center"
           ></e-column>
         </e-columns>
       </ejs-treegrid>
