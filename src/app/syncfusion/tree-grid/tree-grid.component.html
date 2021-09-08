@@ -1,0 +1,65 @@
+<div class="w-100 vh-100 d-flex justify-content-center align-items-center">
+  <div class="control-section w-75">
+    <div>
+      <ejs-treegrid
+        #treegrid
+        [contextMenuItems]=""
+        [dataSource]="tasks"
+        childMapping="subtasks"
+        height="800"
+        [treeColumnIndex]="1"
+        [allowSelection]="true"
+        [selectionSettings]="selectionSettings"
+        [contextMenuItems]="contextMenuItems"
+        [editSettings]="editing"
+      >
+        <e-columns>
+          <e-column
+            field="lineRef"
+            headerText="Line Ref"
+            width="70"
+            textAlign="Right"
+          ></e-column>
+          <e-column
+            field="taskName"
+            headerText="Task Name"
+            width="200"
+            textAlign="Left"
+          ></e-column>
+          <e-column
+            field="duration"
+            headerText="Duration"
+            width="100"
+            textAlign="Right"
+          ></e-column>
+          <e-column
+            field="startDate"
+            headerText="Start Date"
+            width="90"
+            format="yMd"
+            textAlign="Right"
+          >
+          </e-column>
+          <e-column
+            field="progress"
+            headerText="Progress"
+            width="90"
+            textAlign="Right"
+          ></e-column>
+        </e-columns>
+      </ejs-treegrid>
+    </div>
+    <ejs-dialog
+      #alertDialog
+      [buttons]="alertDlgButtons"
+      [visible]="hidden"
+      [header]="alertHeader"
+      [animationSettings]="animationSettings"
+      [content]="alertContent"
+      [showCloseIcon]="showCloseIcon"
+      [target]="target"
+      [width]="alertWidth"
+    >
+    </ejs-dialog>
+  </div>
+</div>
