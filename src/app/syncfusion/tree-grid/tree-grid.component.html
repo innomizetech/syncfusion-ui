@@ -1,39 +1,43 @@
 <div class="vh-100">
-  <div class="control-section">
-    <div>
-      <ejs-treegrid
-        #treegrid
-        [dataSource]="tasks"
-        childMapping="subtasks"
-        height="100%"
-        [treeColumnIndex]="1"
-        [allowSelection]="true"
-        [selectionSettings]="selectionSettings"
-        [contextMenuItems]="contextMenuItems"
-        [editSettings]="editing"
-        [allowRowDragAndDrop]="true"
-        (contextMenuClick)="contextMenuClick($event)"
-        (rowSelected)="onSelected()"
-      >
-        <e-columns>
-          <e-column
-            [visible]="false"
-            field="taskID"
-            headerText="taskID"
-            isPrimaryKey="true"
-            width="0"
-            [hidden]="true"
-            textAlign="Right"
-          ></e-column>
-          <e-column field="name" headerText="Name" width="200" textAlign="Left"></e-column>
-          <e-column field="startDate" headerText="Start Date" width="100" format="yMd" textAlign="Right"> </e-column>
-          <e-column field="endDate" headerText="End Date" width="100" format="yMd" textAlign="Right"> </e-column>
-          <e-column field="progress" headerText="Progress" width="90" textAlign="Center"></e-column>
-          <e-column field="duration" headerText="Duration" width="90" textAlign="Center"></e-column>
-          <e-column field="priority" headerText="Priority" width="90" textAlign="Center"></e-column>
-          <e-column field="approved" headerText="Approved" width="90" textAlign="Center"></e-column>
-        </e-columns>
-      </ejs-treegrid>
+    <div class="control-section">
+        <div>
+            <ejs-treegrid
+                #treegrid
+                [dataSource]="tasks"
+                childMapping="subtasks"
+                height="100%"
+                [treeColumnIndex]="1"
+                [allowSelection]="true"
+                [selectionSettings]="selectionSettings"
+                [contextMenuItems]="contextMenuItems"
+                [editSettings]="editing"
+                [allowRowDragAndDrop]="true"
+                (contextMenuClick)="contextMenuClick($event)"
+                (rowSelected)="onSelected()"
+                [allowSorting]="allowSorting"
+                [allowFiltering]="allowFiltering"
+                [frozenColumns]="frozenColumnIndex"
+            >
+                <e-columns>
+                    <e-column
+                        field="taskID"
+                        headerText="taskID"
+                        isPrimaryKey="true"
+                        width="0"
+                        [hidden]="true"
+                        textAlign="Right"
+                    ></e-column>
+                    <e-column field="name" headerText="Name" width="200" textAlign="Left"></e-column>
+                    <e-column field="startDate" headerText="Start Date" width="100" format="yMd" textAlign="Right">
+                    </e-column>
+                    <e-column field="endDate" headerText="End Date" width="100" format="yMd" textAlign="Right">
+                    </e-column>
+                    <e-column field="progress" headerText="Progress" width="90" textAlign="Center"></e-column>
+                    <e-column field="duration" headerText="Duration" width="90" textAlign="Center"></e-column>
+                    <e-column field="priority" headerText="Priority" width="90" textAlign="Center"></e-column>
+                    <e-column field="approved" headerText="Approved" width="90" textAlign="Center"></e-column>
+                </e-columns>
+            </ejs-treegrid>
+        </div>
     </div>
-  </div>
 </div>

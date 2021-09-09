@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SyncfusionModule } from './syncfusion/syncfusion.module'
 
+
 @NgModule({
   declarations: [
     AppComponent
@@ -14,7 +15,6 @@ import { SyncfusionModule } from './syncfusion/syncfusion.module'
     AppRoutingModule,
     SyncfusionModule
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

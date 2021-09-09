@@ -1,4 +1,5 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { isEmpty } from 'lodash';
 
 import {
     TreeGridComponent as TreeGrid,
@@ -27,6 +28,12 @@ export class TreeGridComponent implements OnInit {
     public copiedRecords: any[] = [];
     public isCut: boolean;
     public editing: EditSettingsModel;
+    public allowSorting: boolean = false;
+    public allowFiltering: boolean = false;
+    public frozenColumnIndex: number = 0;
+    public customAttributes: any;
+    public pageSettings: Object;
+    public infiniteScrollSettings: Object;
 
     get selectedRows(): any[] {
         return this.treegrid.getSelectedRows();
@@ -43,19 +50,40 @@ export class TreeGridComponent implements OnInit {
     ngOnInit(): void {
         this.tasks = tasks;
         this.selectionSettings = { type: 'Multiple' };
+        this.generateContextMenuItems();
+        this.customAttributes = { class: 'customcss' };
         this.editing = {
             allowAdding: true,
             allowDeleting: true,
             allowEditing: true,
             mode: 'Row',
         };
+    }
+
+    generateContextMenuItems(action?: string, state: boolean = false) {
         this.contextMenuItems = [
-            'AddRow',
             'Edit',
             'Delete',
+            { text: 'AddRow', target: '.e-content', id: 'context-menu-add-item' },
             { text: 'Copy', target: '.e-content', id: 'context-menu-copy-item' },
             { text: 'Cut', target: '.e-content', id: 'context-menu-cut-item' },
             { text: 'Paste', target: '.e-content', id: 'context-menu-paste-item' },
+            {
+                text: `${action === 'filter' && state ? 'Disable' : 'Enable'} Filtering`,
+                target: '.e-headercontent',
+                id: 'filter',
+            },
+            {
+                text: `${action === 'sort' && state ? 'Disable' : 'Enable'} Sorting`,
+                target: '.e-headercontent',
+                id: 'sort',
+            },
+            {
+                text: `${action === 'freeze' && state ? 'Disable' : 'Enable'} Freeze`,
+                target: '.e-headercontent',
+                id: 'freeze',
+            },
+            { text: 'Change Style', target: '.e-headercontent', id: 'changeStyle' },
         ];
     }
 
@@ -73,13 +101,41 @@ export class TreeGridComponent implements OnInit {
 
     contextMenuClick(args) {
         switch (args.item.id) {
+            case 'context-menu-add-item':
+                return this.treegrid.editModule.addRecord();
             case 'context-menu-copy-item':
                 return this.handleCopy();
             case 'context-menu-cut-item':
                 return this.handleCut();
             case 'context-menu-paste-item':
                 return this.handlePaste();
-                ``;
+            case 'filter':
+                this.allowFiltering = !this.allowFiltering;
+                this.generateContextMenuItems('filter', this.allowFiltering);
+                break;
+            case 'sort':
+                this.allowSorting = !this.allowSorting;
+                this.generateContextMenuItems('sort', this.allowSorting);
+                break;
+            case 'freeze':
+                if (this.frozenColumnIndex) {
+                    this.frozenColumnIndex = 0;
+                    this.generateContextMenuItems('freeze', false);
+                } else {
+                    this.frozenColumnIndex = args['column']['index'] + 1;
+                    this.generateContextMenuItems('freeze', !!this.frozenColumnIndex);
+                }
+                break;
+            case 'changeStyle':
+                const filedName = args['column']['field'];
+                if (!isEmpty(this.treegrid.getColumnByField(filedName)?.customAttributes)) {
+                    this.treegrid.getColumnByField(filedName).customAttributes = {};
+                } else {
+                    this.treegrid.getColumnByField(filedName).customAttributes = this.customAttributes;
+                }
+
+                this.treegrid.refreshColumns();
+                break;
         }
     }
 
