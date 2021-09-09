@@ -1,8 +1,8 @@
 import * as faker from 'faker';
 
+import { v4 as uuid } from 'uuid';
 export interface Task {
-  taskID: number;
-  lineRef: number;
+  taskID: string;
   name: string;
   startDate: Date;
   endDate: Date;
@@ -22,8 +22,7 @@ const generateTasks = (): Task[] => {
   return Array(1000)
     .fill(null)
     .map((item, idx) => ({
-      taskID: faker.unique,
-      lineRef: idx + 1,
+      taskID: uuid(),
       name: faker.name.findName(),
       startDate: faker.date.past(),
       endDate: faker.date.future(),
@@ -33,6 +32,7 @@ const generateTasks = (): Task[] => {
       approved: faker.datatype.boolean(),
     }));
 };
+
 
 const populateTasks = (tasks: Task[]) => {
   let currentIndex = 1;
