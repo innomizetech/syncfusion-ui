@@ -19,7 +19,7 @@ const getRandomPriority = () => {
 };
 
 const generateTasks = (): Task[] => {
-  return Array(50)
+  return Array(1000)
     .fill(null)
     .map((item, idx) => ({
       taskID: uuid(),

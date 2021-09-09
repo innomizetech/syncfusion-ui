@@ -5,7 +5,7 @@
                 #treegrid
                 [dataSource]="tasks"
                 childMapping="subtasks"
-                height="100%"
+                height="95vh"
                 [treeColumnIndex]="1"
                 [allowSelection]="true"
                 [selectionSettings]="selectionSettings"
@@ -17,6 +17,7 @@
                 [allowSorting]="allowSorting"
                 [allowFiltering]="allowFiltering"
                 [frozenColumns]="frozenColumnIndex"
+                [enableInfiniteScrolling]="true"
             >
                 <e-columns>
                     <e-column
