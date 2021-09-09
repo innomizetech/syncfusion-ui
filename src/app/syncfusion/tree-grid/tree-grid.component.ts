@@ -288,20 +288,23 @@ export class TreeGridComponent implements OnInit {
         });
 
         this.treegrid.copy();
-        this.contextMenuItems = [
-            ...this.contextMenuItems,
-            {
-                text: 'Paste',
-                target: '.e-content',
-                items: [
-                    {
-                        text: 'Paste as Sibling',
-                        id: 'context-menu-paste-sibling-item',
-                    },
-                    { text: 'Paste as Child', id: 'context-menu-paste-child-item' },
-                ],
-            },
-        ];
+
+        if (!this.contextMenuItems.map((item: any) => item.text).includes('Paste')) {
+            this.contextMenuItems = [
+                ...this.contextMenuItems,
+                {
+                    text: 'Paste',
+                    target: '.e-content',
+                    items: [
+                        {
+                            text: 'Paste as Sibling',
+                            id: 'context-menu-paste-sibling-item',
+                        },
+                        { text: 'Paste as Child', id: 'context-menu-paste-child-item' },
+                    ],
+                },
+            ];
+        }
     }
 
     handleCut() {
@@ -320,7 +323,15 @@ export class TreeGridComponent implements OnInit {
         let cloneTasks = _.clone(this.tasks);
 
         for (const record of filterRecords) {
-            const path = this.findPath(isPasteAsChild ? record.taskID : record.parentItem.taskID);
+            const taskID = isPasteAsChild ? record.taskID : record.parentItem?.taskID;
+
+            if (!taskID) {
+                cloneTasks = [...cloneTasks, ...this.copiedRecords.map((record) => this.populateTask(record))];
+
+                continue;
+            }
+
+            const path = this.findPath(taskID);
 
             _.set(cloneTasks, `${path}.subtasks`, [
                 ...(_.get(cloneTasks, `${path}.subtasks`) || []),
