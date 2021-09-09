@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { isEmpty } from 'lodash';
 
 import {
@@ -6,6 +6,7 @@ import {
     EditSettingsModel,
     RowDDService,
     SelectionService,
+    InfiniteScrollService,
 } from '@syncfusion/ej2-angular-treegrid';
 import * as _ from 'lodash';
 import { v4 as uuid } from 'uuid';
@@ -16,7 +17,8 @@ import { Task, tasks } from './mockup-data';
     selector: 'app-tree-grid',
     templateUrl: 'tree-grid.component.html',
     styleUrls: ['./tree-grid.component.scss'],
-    providers: [RowDDService, SelectionService],
+    providers: [RowDDService, SelectionService, InfiniteScrollService],
+    encapsulation: ViewEncapsulation.None,
 })
 export class TreeGridComponent implements OnInit {
     @ViewChild('treegrid') public treegrid: TreeGrid;
@@ -67,7 +69,8 @@ export class TreeGridComponent implements OnInit {
             'Delete',
             { text: 'Copy', target: '.e-content', id: 'context-menu-copy-item' },
             { text: 'Cut', target: '.e-content', id: 'context-menu-cut-item' },
-            { text: 'Paste', target: '.e-content', id: 'context-menu-paste-item' },
+            { text: 'Paste as Sibling', target: '.e-content', id: 'context-menu-paste-sibling-item' },
+            { text: 'Paste as Child', target: '.e-content', id: 'context-menu-paste-child-item' },
             {
                 text: `${action === 'filter' && state ? 'Disable' : 'Enable'} Filtering`,
                 target: '.e-headercontent',
@@ -107,8 +110,10 @@ export class TreeGridComponent implements OnInit {
                 return this.handleCopy();
             case 'context-menu-cut-item':
                 return this.handleCut();
-            case 'context-menu-paste-item':
-                return this.handlePaste();
+            case 'context-menu-paste-sibling-item':
+                return this.handlePaste(false);
+            case 'context-menu-paste-child-item':
+                return this.handlePaste(true);
             case 'filter':
                 this.allowFiltering = !this.allowFiltering;
                 this.generateContextMenuItems('filter', this.allowFiltering);
@@ -136,20 +141,6 @@ export class TreeGridComponent implements OnInit {
 
                 this.treegrid.refreshColumns();
                 break;
-        }
-    }
-
-    @HostListener('window:keydown', ['$event'])
-    onKeyPress(event) {
-        if (event.ctrlKey || event.metaKey) {
-            switch (event.keyCode) {
-                case 67:
-                    return this.handleCopy();
-                case 86:
-                    return this.handlePaste();
-                case 88:
-                    return this.handleCut();
-            }
         }
     }
 
@@ -183,7 +174,7 @@ export class TreeGridComponent implements OnInit {
         this.handleCopy(true);
     }
 
-    handlePaste() {
+    handlePaste(isPasteAsChild: boolean) {
         if (!this.selectedRows.length || !this.treegrid.clipboardModule['copyContent']) {
             return;
         }
@@ -195,10 +186,10 @@ export class TreeGridComponent implements OnInit {
         let cloneTasks = _.clone(this.tasks);
 
         for (const record of filterRecords) {
-            const path = this.findPath(record.subtasks ? record.taskID : record.parentItem.taskID);
+            const path = this.findPath(isPasteAsChild ? record.taskID : record.parentItem.taskID);
 
             _.set(cloneTasks, `${path}.subtasks`, [
-                ..._.get(cloneTasks, `${path}.subtasks`),
+                ...(_.get(cloneTasks, `${path}.subtasks`) || []),
                 ...this.copiedRecords.map((record) => this.populateTask(record)),
             ]);
         }
@@ -227,30 +218,28 @@ export class TreeGridComponent implements OnInit {
     findPath(taskID) {
         const findInTree = (id, tree, path = '') => {
             if (tree.taskID === id) {
-                return { success: true, path };
+                return { path, success: true };
             }
 
-            if (!tree.subtasks) {
-                return;
-            }
+            if (tree.subtasks) {
+                let result = { success: false, path: null };
 
-            for (const [index, task] of tree.subtasks.entries()) {
-                if (task.taskID === id) {
-                    return { success: true, path: `${path}.subtasks[${index}]` };
+                for (const [index, task] of tree.subtasks.entries()) {
+                    result = findInTree(id, task, path + '.subtasks' + '[' + index + ']');
+
+                    if (result.success) {
+                        return result;
+                    }
                 }
 
-                const result = findInTree(id, task, path + '.subtasks' + '[' + index + ']');
-
-                if (result) {
-                    return result;
-                }
+                return result;
             }
 
-            return { success: false };
+            return { success: false, path: null };
         };
 
         for (const [index, task] of this.tasks.entries()) {
-            const { success = null, path } = findInTree(taskID, task);
+            const { success, path } = findInTree(taskID, task);
 
             if (success) {
                 return `[${index}]${path}`;
