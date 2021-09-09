@@ -27,6 +27,7 @@ import { Task, tasks } from './mockup-data';
 export class TreeGridComponent implements OnInit {
     @ViewChild('treegrid') public treegrid: TreeGrid;
     @ViewChild('styleDialog') styleDialog: DialogComponent;
+    @ViewChild('inputcol') inputcol;
 
     public tasks: Task[] = [];
     public selectionSettings: object;
@@ -43,6 +44,74 @@ export class TreeGridComponent implements OnInit {
     public visible: boolean = false;
     styleForm: FormGroup;
     currentCol: Column;
+
+    dataColumns: any = [
+        {
+            field: 'taskID',
+            headerText: 'Task ID',
+            textAlign: 'Left',
+            width: 0,
+            isPrimaryKey: true,
+            hidden: true,
+        },
+        {
+            field: 'name',
+            headerText: 'Name',
+            textAlign: 'Left',
+            width: 90,
+            isPrimaryKey: false,
+        },
+        {
+            field: 'startDate',
+            headerText: 'Start Date',
+            textAlign: 'Left',
+            width: 90,
+            isPrimaryKey: false,
+            hidden: false,
+            format: 'yMd',
+        },
+        {
+            field: 'endDate',
+            headerText: 'End Date',
+            textAlign: 'Left',
+            width: 90,
+            isPrimaryKey: false,
+            hidden: false,
+            format: 'yMd',
+        },
+        {
+            field: 'progress',
+            headerText: 'Progress',
+            textAlign: 'Left',
+            width: 90,
+            isPrimaryKey: false,
+            hidden: false,
+        },
+        {
+            field: 'duration',
+            headerText: 'Duration',
+            textAlign: 'Left',
+            width: 90,
+            isPrimaryKey: false,
+            hidden: false,
+        },
+        {
+            field: 'priority',
+            headerText: 'Priority',
+            textAlign: 'Left',
+            width: 90,
+            isPrimaryKey: false,
+            hidden: false,
+        },
+        {
+            field: 'approved',
+            headerText: 'Approve',
+            textAlign: 'Left',
+            width: 90,
+            isPrimaryKey: false,
+            hidden: false,
+        },
+    ];
 
     get selectedRows(): any[] {
         return this.treegrid.getSelectedRows();
@@ -83,13 +152,11 @@ export class TreeGridComponent implements OnInit {
 
     generateContextMenuItems(action?: string, state: boolean = false) {
         this.contextMenuItems = [
-            { text: 'Add', target: '.e-content', id: 'context-menu-add-item', iconCss: '' },
+            { text: 'Add Row', target: '.e-content', id: 'context-menu-add-item', iconCss: '' },
             'Edit',
             'Delete',
             { text: 'Copy', target: '.e-content', id: 'context-menu-copy-item' },
             { text: 'Cut', target: '.e-content', id: 'context-menu-cut-item' },
-            { text: 'Paste as Sibling', target: '.e-content', id: 'context-menu-paste-sibling-item' },
-            { text: 'Paste as Child', target: '.e-content', id: 'context-menu-paste-child-item' },
             {
                 text: `${action === 'filter' && state ? 'Disable' : 'Enable'} Filtering`,
                 target: '.e-headercontent',
@@ -106,6 +173,8 @@ export class TreeGridComponent implements OnInit {
                 id: 'freeze',
             },
             { text: 'Change Style', target: '.e-headercontent', id: 'changeStyle' },
+            { text: 'Delete Column', target: '.e-headercontent', id: 'deleteColumn' },
+            { text: 'Edit Column', target: '.e-headercontent', id: 'editColumn' },
         ];
     }
 
@@ -155,6 +224,30 @@ export class TreeGridComponent implements OnInit {
                 const filedName = args['column']['field'];
                 this.currentCol = this.treegrid.getColumnByField(filedName);
                 break;
+            case 'deleteColumn':
+                const name = args['column']['field'];
+                for (var i = 1; i < this.dataColumns.length; i++) {
+                    if (this.dataColumns[i].field === name) {
+                        this.dataColumns.splice(i, 1);
+                    }
+                }
+                break;
+            case 'editColumn':
+                const editName = args['column']['field'];
+                for (var i = 1; i < this.dataColumns.length; i++) {
+                    if (this.dataColumns[i].field === editName) {
+                        const test = {
+                            field: 'startDate',
+                            headerText: 'Start Date',
+                            textAlign: 'Right',
+                            width: 90,
+                            isPrimaryKey: false,
+                            hidden: false,
+                        };
+                        this.dataColumns.splice(i, 1, test);
+                    }
+                }
+                break;
         }
     }
 
@@ -195,6 +288,20 @@ export class TreeGridComponent implements OnInit {
         });
 
         this.treegrid.copy();
+        this.contextMenuItems = [
+            ...this.contextMenuItems,
+            {
+                text: 'Paste',
+                target: '.e-content',
+                items: [
+                    {
+                        text: 'Paste as Sibling',
+                        id: 'context-menu-paste-sibling-item',
+                    },
+                    { text: 'Paste as Child', id: 'context-menu-paste-child-item' },
+                ],
+            },
+        ];
     }
 
     handleCut() {
@@ -304,5 +411,15 @@ export class TreeGridComponent implements OnInit {
     }
     onOpenDialog(): void {
         this.styleDialog.show();
+    }
+    add(inputcol: string) {
+        this.dataColumns.push({
+            field: inputcol,
+            headerText: inputcol,
+            textAlign: 'Right',
+            width: 90,
+            isPrimaryKey: false,
+        });
+        this.inputcol.nativeElement.value = '';
     }
 }

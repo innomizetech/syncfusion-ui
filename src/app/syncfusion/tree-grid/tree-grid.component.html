@@ -18,26 +18,22 @@
                 [allowFiltering]="allowFiltering"
                 [frozenColumns]="frozenColumnIndex"
                 (actionComplete)="actionComplete($event)"
-                [enableInfiniteScrolling]="true"
+                allowReordering="true"
+                allowResizing="true"
+                showColumnMenu="true"
             >
                 <e-columns>
-                    <e-column
-                        field="taskID"
-                        headerText="taskID"
-                        isPrimaryKey="true"
-                        width="0"
-                        [hidden]="true"
-                        textAlign="Right"
-                    ></e-column>
-                    <e-column field="name" headerText="Name" width="200" textAlign="Left"></e-column>
-                    <e-column field="startDate" headerText="Start Date" width="100" format="yMd" textAlign="Right">
-                    </e-column>
-                    <e-column field="endDate" headerText="End Date" width="100" format="yMd" textAlign="Right">
-                    </e-column>
-                    <e-column field="progress" headerText="Progress" width="90" textAlign="Center"></e-column>
-                    <e-column field="duration" headerText="Duration" width="90" textAlign="Center"></e-column>
-                    <e-column field="priority" headerText="Priority" width="90" textAlign="Center"></e-column>
-                    <e-column field="approved" headerText="Approved" width="90" textAlign="Center"></e-column>
+                    <ng-template ngFor let-column [ngForOf]="dataColumns">
+                        <e-column
+                            [field]="column.field"
+                            [headerText]="column.headerText"
+                            width="{{ column.width }}"
+                            textAlign="Left"
+                            [hidden]="true"
+                            [isPrimaryKey]="column.isPrimaryKey"
+                            format={{column.format}}
+                        ></e-column>
+                    </ng-template>
                 </e-columns>
             </ejs-treegrid>
         </div>
