@@ -18,6 +18,7 @@
                 [allowFiltering]="allowFiltering"
                 [frozenColumns]="frozenColumnIndex"
                 [enableInfiniteScrolling]="true"
+                (actionComplete)="actionComplete($event)"
             >
                 <e-columns>
                     <e-column
