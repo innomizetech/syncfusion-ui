@@ -62,9 +62,9 @@ export class TreeGridComponent implements OnInit {
 
     generateContextMenuItems(action?: string, state: boolean = false) {
         this.contextMenuItems = [
+            { text: 'Add', target: '.e-content', id: 'context-menu-add-item', iconCss: '' },
             'Edit',
             'Delete',
-            { text: 'AddRow', target: '.e-content', id: 'context-menu-add-item' },
             { text: 'Copy', target: '.e-content', id: 'context-menu-copy-item' },
             { text: 'Cut', target: '.e-content', id: 'context-menu-cut-item' },
             { text: 'Paste', target: '.e-content', id: 'context-menu-paste-item' },
@@ -270,5 +270,20 @@ export class TreeGridComponent implements OnInit {
             approved: record.approved,
             subtasks: record.subtasks,
         };
+    }
+
+    actionComplete(agrs) {
+        if (agrs.action === 'add') {
+            console.log('Added');
+            console.log('Added data:', agrs.data);
+        }
+        if (agrs.action === 'edit') {
+            console.log('Edited');
+            console.log('Edited data:', agrs.data);
+        }
+        if (!agrs.action && agrs.requestType === 'delete') {
+            console.log('Deleted');
+            console.log('Deleted data:', agrs.data);
+        }
     }
 }

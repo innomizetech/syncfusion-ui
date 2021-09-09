@@ -17,6 +17,7 @@
                 [allowSorting]="allowSorting"
                 [allowFiltering]="allowFiltering"
                 [frozenColumns]="frozenColumnIndex"
+                (actionComplete)="actionComplete($event)"
             >
                 <e-columns>
                     <e-column
