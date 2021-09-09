@@ -17,8 +17,8 @@
                 [allowSorting]="allowSorting"
                 [allowFiltering]="allowFiltering"
                 [frozenColumns]="frozenColumnIndex"
-                [enableInfiniteScrolling]="true"
                 (actionComplete)="actionComplete($event)"
+                [enableInfiniteScrolling]="true"
             >
                 <e-columns>
                     <e-column
@@ -43,3 +43,43 @@
         </div>
     </div>
 </div>
+
+<ejs-dialog
+    id="styleDialog"
+    #styleDialog
+    header="Change Column Format"
+    width="400px"
+    showCloseIcon="true"
+    height="350px"
+    [visible]="visible"
+>
+    <form [formGroup]="styleForm" (ngSubmit)="changeCellStyle()">
+        <div class="form-group">
+            <label for="fontSize" class="my-2">Font Size</label>
+            <input type="number" name="fontSize" class="form-control" formControlName="fontSize" />
+        </div>
+        <div class="form-group">
+            <label for="textAlign" class="my-2">Cell Alignment</label>
+            <select class="form-select" name="textAlign" formControlName="textAlign">
+                <option value="left">Left</option>
+                <option value="right">Right</option>
+                <option value="center">Center</option>
+                <option value="justify">Justify</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="exampleColorInput" class="form-label my-2">Color</label>
+            <input
+                type="color"
+                class="form-control form-control-color"
+                id="exampleColorInput"
+                value="#563d7c"
+                title="Choose your color"
+                formControlName="color"
+            />
+        </div>
+
+        <button type="submit" class="btn btn-primary my-2">Submit</button>
+    </form>
+</ejs-dialog>

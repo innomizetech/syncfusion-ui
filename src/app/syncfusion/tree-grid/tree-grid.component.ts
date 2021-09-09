@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { isEmpty } from 'lodash';
+
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 import {
     TreeGridComponent as TreeGrid,
@@ -7,7 +8,10 @@ import {
     RowDDService,
     SelectionService,
     InfiniteScrollService,
+    Column,
 } from '@syncfusion/ej2-angular-treegrid';
+import { DialogComponent } from '@syncfusion/ej2-angular-popups';
+
 import * as _ from 'lodash';
 import { v4 as uuid } from 'uuid';
 
@@ -22,6 +26,7 @@ import { Task, tasks } from './mockup-data';
 })
 export class TreeGridComponent implements OnInit {
     @ViewChild('treegrid') public treegrid: TreeGrid;
+    @ViewChild('styleDialog') styleDialog: DialogComponent;
 
     public tasks: Task[] = [];
     public selectionSettings: object;
@@ -35,7 +40,9 @@ export class TreeGridComponent implements OnInit {
     public frozenColumnIndex: number = 0;
     public customAttributes: any;
     public pageSettings: Object;
-    public infiniteScrollSettings: Object;
+    public visible: boolean = false;
+    styleForm: FormGroup;
+    currentCol: Column;
 
     get selectedRows(): any[] {
         return this.treegrid.getSelectedRows();
@@ -43,6 +50,18 @@ export class TreeGridComponent implements OnInit {
 
     get selectedRecords(): any[] {
         return this.treegrid.getSelectedRecords();
+    }
+
+    constructor(private formBuilder: FormBuilder) {
+        this.createStyleForm();
+    }
+
+    createStyleForm() {
+        this.styleForm = this.formBuilder.group({
+            textAlign: [''],
+            fontSize: [''],
+            color: [''],
+        });
     }
 
     getDataUid(item) {
@@ -132,15 +151,23 @@ export class TreeGridComponent implements OnInit {
                 }
                 break;
             case 'changeStyle':
+                this.onOpenDialog();
                 const filedName = args['column']['field'];
-                if (!isEmpty(this.treegrid.getColumnByField(filedName)?.customAttributes)) {
-                    this.treegrid.getColumnByField(filedName).customAttributes = {};
-                } else {
-                    this.treegrid.getColumnByField(filedName).customAttributes = this.customAttributes;
-                }
-
-                this.treegrid.refreshColumns();
+                this.currentCol = this.treegrid.getColumnByField(filedName);
                 break;
+        }
+    }
+
+    changeCellStyle() {
+        for (let rowIndex = 0; rowIndex < this.treegrid.getRows().length; rowIndex++) {
+            this.treegrid
+                .getCellFromIndex(rowIndex, this.currentCol['index'])
+                .setAttribute(
+                    'style',
+                    `color: ${this.styleForm.value?.color ? this.styleForm.value.color : null}; font-size: ${
+                        this.styleForm.value?.fontSize ? this.styleForm.value.fontSize + 'px' : null
+                    }; text-align: ${this.styleForm.value?.textAlign ? this.styleForm.value.textAlign : null}`,
+                );
         }
     }
 
@@ -274,5 +301,8 @@ export class TreeGridComponent implements OnInit {
             console.log('Deleted');
             console.log('Deleted data:', agrs.data);
         }
+    }
+    onOpenDialog(): void {
+        this.styleDialog.show();
     }
 }
