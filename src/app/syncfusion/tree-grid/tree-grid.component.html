@@ -31,7 +31,7 @@
                             textAlign="Left"
                             [hidden]="true"
                             [isPrimaryKey]="column.isPrimaryKey"
-                            format={{column.format}}
+                            format="{{ column.format }}"
                         ></e-column>
                     </ng-template>
                 </e-columns>
@@ -78,4 +78,20 @@
 
         <button type="submit" class="btn btn-primary my-2">Submit</button>
     </form>
+</ejs-dialog>
+<ejs-dialog
+    id="dialogColumn"
+    #dialogColumn
+    header="{{ actionOfColumn }}"
+    width="400px"
+    showCloseIcon="true"
+    height="350px"
+    [visible]="visible"
+>
+    <div class="form-group">
+        <label for="fontSize" class="my-2">Name Column</label>
+        <input type="text" name="newColumnName" class="form-control" [(ngModel)]="newColumnName" />
+    </div>
+
+    <button type="submit" class="btn btn-primary my-2" (click)="handleAction()">{{ actionOfColumn }}</button>
 </ejs-dialog>
