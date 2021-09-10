@@ -42,9 +42,10 @@ export class TreeGridComponent implements OnInit {
     public customAttributes: any;
     public pageSettings: Object;
     public visible: boolean = false;
-    public actionOfColumn = '';
-    public nameOfColumn = '';
-    public newColumnName = '';
+    public actionOfColumn: string = '';
+    public nameOfColumn: string = '';
+    public newColumnName: string = '';
+    public indexChildMapping: number = 1;
     styleForm: FormGroup;
     currentCol: Column;
 
@@ -296,6 +297,12 @@ export class TreeGridComponent implements OnInit {
                     break;
                 }
             }
+            for (var i = 0; i < this.dataColumns.length - 1; i++) {
+              if (this.dataColumns[i].field === 'name') {
+                  this.indexChildMapping = i;
+                  break;
+              }
+            }
         } else if (this.actionOfColumn === 'Add Right Column') {
             for (var i = 0; i < this.dataColumns.length - 1; i++) {
                 if (this.dataColumns[i].headerText === this.nameOfColumn) {
@@ -309,6 +316,12 @@ export class TreeGridComponent implements OnInit {
                     });
                     break;
                 }
+            }
+            for (var i = 0; i < this.dataColumns.length - 1; i++) {
+              if (this.dataColumns[i].field === 'name') {
+                  this.indexChildMapping = i;
+                  break;
+              }
             }
         }
         this.dialogColumn.hide();
