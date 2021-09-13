@@ -3,9 +3,9 @@
         <div>
             <ejs-treegrid
                 #treegrid
+                width={{widthScreen}}
                 [dataSource]="tasks"
                 childMapping="subtasks"
-                height="95vh"
                 [treeColumnIndex]="indexChildMapping"
                 [allowSelection]="true"
                 [selectionSettings]="selectionSettings"
@@ -29,7 +29,6 @@
                             [headerText]="column.headerText"
                             width="{{ column.width }}"
                             textAlign="Left"
-                            [hidden]="true"
                             [isPrimaryKey]="column.isPrimaryKey"
                             format="{{ column.format }}"
                         ></e-column>

@@ -46,6 +46,7 @@ export class TreeGridComponent implements OnInit {
     public nameOfColumn: string = '';
     public newColumnName: string = '';
     public indexChildMapping: number = 1;
+    public widthScreen: number = 0;
     styleForm: FormGroup;
     currentCol: Column;
 
@@ -62,14 +63,14 @@ export class TreeGridComponent implements OnInit {
             field: 'name',
             headerText: 'Name',
             textAlign: 'Left',
-            width: 90,
+            width: 150,
             isPrimaryKey: false,
         },
         {
             field: 'startDate',
             headerText: 'Start Date',
             textAlign: 'Left',
-            width: 90,
+            width: 150,
             isPrimaryKey: false,
             hidden: false,
             format: 'yMd',
@@ -78,7 +79,7 @@ export class TreeGridComponent implements OnInit {
             field: 'endDate',
             headerText: 'End Date',
             textAlign: 'Left',
-            width: 90,
+            width: 150,
             isPrimaryKey: false,
             hidden: false,
             format: 'yMd',
@@ -87,7 +88,7 @@ export class TreeGridComponent implements OnInit {
             field: 'progress',
             headerText: 'Progress',
             textAlign: 'Left',
-            width: 90,
+            width: 150,
             isPrimaryKey: false,
             hidden: false,
         },
@@ -95,7 +96,7 @@ export class TreeGridComponent implements OnInit {
             field: 'duration',
             headerText: 'Duration',
             textAlign: 'Left',
-            width: 90,
+            width: 150,
             isPrimaryKey: false,
             hidden: false,
         },
@@ -103,7 +104,7 @@ export class TreeGridComponent implements OnInit {
             field: 'priority',
             headerText: 'Priority',
             textAlign: 'Left',
-            width: 90,
+            width: 150,
             isPrimaryKey: false,
             hidden: false,
         },
@@ -111,7 +112,7 @@ export class TreeGridComponent implements OnInit {
             field: 'approved',
             headerText: 'Approve',
             textAlign: 'Left',
-            width: 90,
+            width: 150,
             isPrimaryKey: false,
             hidden: false,
         },
@@ -152,6 +153,7 @@ export class TreeGridComponent implements OnInit {
             allowEditing: true,
             mode: 'Row',
         };
+        this.widthScreen = window.screen.width;
     }
 
     generateContextMenuItems(action?: string, state: boolean = false) {
@@ -284,7 +286,7 @@ export class TreeGridComponent implements OnInit {
             getHeaderColumn.headerText = this.newColumnName;
             this.treegrid.refreshColumns();
         } else if (this.actionOfColumn === 'Add Left Column') {
-            for (var i = 0; i < this.dataColumns.length - 1; i++) {
+            for (var i = 0; i < this.dataColumns.length ; i++) {
                 if (this.dataColumns[i].headerText === this.nameOfColumn) {
                     this.dataColumns.splice(i, 0, {
                         field: this.newColumnName,
@@ -304,7 +306,7 @@ export class TreeGridComponent implements OnInit {
               }
             }
         } else if (this.actionOfColumn === 'Add Right Column') {
-            for (var i = 0; i < this.dataColumns.length - 1; i++) {
+            for (var i = 0; i < this.dataColumns.length ; i++) {
                 if (this.dataColumns[i].headerText === this.nameOfColumn) {
                     this.dataColumns.splice(i + 1, 0, {
                         field: this.newColumnName,
