@@ -47,6 +47,8 @@ export class TreeGridComponent implements OnInit {
     public newColumnName: string = '';
     public indexChildMapping: number = 1;
     public widthScreen: number = 0;
+    public showButton: boolean = true;
+    public showMessage: boolean = false;
     styleForm: FormGroup;
     currentCol: Column;
 
@@ -74,6 +76,7 @@ export class TreeGridComponent implements OnInit {
             isPrimaryKey: false,
             hidden: false,
             format: 'yMd',
+            editType: 'datepickeredit',
         },
         {
             field: 'endDate',
@@ -83,6 +86,7 @@ export class TreeGridComponent implements OnInit {
             isPrimaryKey: false,
             hidden: false,
             format: 'yMd',
+            editType: 'datepickeredit',
         },
         {
             field: 'progress',
@@ -264,6 +268,16 @@ export class TreeGridComponent implements OnInit {
         }
     }
 
+    checkNull(e) {
+        if (e.length === 0 || e === '' || e === null) {
+            this.showButton = true;
+            this.showMessage = false;
+        } else {
+            this.showButton = false;
+            this.showMessage = true;
+        }
+    }
+
     handleAction() {
         if (this.actionOfColumn === 'Edit') {
             let newColumns: any;
@@ -286,13 +300,13 @@ export class TreeGridComponent implements OnInit {
             getHeaderColumn.headerText = this.newColumnName;
             this.treegrid.refreshColumns();
         } else if (this.actionOfColumn === 'Add Left Column') {
-            for (var i = 0; i < this.dataColumns.length ; i++) {
+            for (var i = 0; i < this.dataColumns.length; i++) {
                 if (this.dataColumns[i].headerText === this.nameOfColumn) {
                     this.dataColumns.splice(i, 0, {
                         field: this.newColumnName,
                         headerText: this.newColumnName,
                         textAlign: 'Left',
-                        width: 90,
+                        width: 150,
                         isPrimaryKey: false,
                         hidden: false,
                     });
@@ -300,19 +314,19 @@ export class TreeGridComponent implements OnInit {
                 }
             }
             for (var i = 0; i < this.dataColumns.length - 1; i++) {
-              if (this.dataColumns[i].field === 'name') {
-                  this.indexChildMapping = i;
-                  break;
-              }
+                if (this.dataColumns[i].field === 'name') {
+                    this.indexChildMapping = i;
+                    break;
+                }
             }
         } else if (this.actionOfColumn === 'Add Right Column') {
-            for (var i = 0; i < this.dataColumns.length ; i++) {
+            for (var i = 0; i < this.dataColumns.length; i++) {
                 if (this.dataColumns[i].headerText === this.nameOfColumn) {
                     this.dataColumns.splice(i + 1, 0, {
                         field: this.newColumnName,
                         headerText: this.newColumnName,
                         textAlign: 'Left',
-                        width: 90,
+                        width: 150,
                         isPrimaryKey: false,
                         hidden: false,
                     });
@@ -320,12 +334,14 @@ export class TreeGridComponent implements OnInit {
                 }
             }
             for (var i = 0; i < this.dataColumns.length - 1; i++) {
-              if (this.dataColumns[i].field === 'name') {
-                  this.indexChildMapping = i;
-                  break;
-              }
+                if (this.dataColumns[i].field === 'name') {
+                    this.indexChildMapping = i;
+                    break;
+                }
             }
         }
+        this.showButton = true;
+        this.showMessage = false;
         this.dialogColumn.hide();
     }
 
