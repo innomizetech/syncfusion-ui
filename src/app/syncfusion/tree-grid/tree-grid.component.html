@@ -31,6 +31,7 @@
                             textAlign="Left"
                             [isPrimaryKey]="column.isPrimaryKey"
                             format="{{ column.format }}"
+                            [editType]="column.editType"
                         ></e-column>
                     </ng-template>
                 </e-columns>
@@ -89,8 +90,9 @@
 >
     <div class="form-group">
         <label for="fontSize" class="my-2">Name Column</label>
-        <input type="text" name="newColumnName" class="form-control" [(ngModel)]="newColumnName" />
+        <input type="text" name="newColumnName" class="form-control" [(ngModel)]="newColumnName"   (ngModelChange)="checkNull($event)"  minlength="1" required />
+        <p class="message" [hidden]="actionOfColumn ==='Edit' ? true : showMessage" >Please don't leave it blank</p>
     </div>
 
-    <button type="submit" class="btn btn-primary my-2" (click)="handleAction()">{{ actionOfColumn }}</button>
+    <button type="submit" class="btn btn-primary my-2" (click)="handleAction()" [disabled]="showButton" >{{ actionOfColumn }}</button>
 </ejs-dialog>
